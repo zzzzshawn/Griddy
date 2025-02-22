@@ -5,7 +5,7 @@ config({ path: ".dev.vars" });
 
 export default {
   schema: "./src/db/schema.ts",
-  driver: "neon", // Use neon driver for PostgreSQL in serverless
+  driver: "neon",
   out: "./drizzle",
   dbCredentials: {
     connectionString: process.env.DATABASE_URL || "",

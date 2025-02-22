@@ -1,5 +1,5 @@
-import { drizzle } from "drizzle-orm/neon-serverless";
-import { Pool } from "@neondatabase/serverless";
+import { drizzle } from 'drizzle-orm/neon-http';
+import { neon, neonConfig } from '@neondatabase/serverless';
 
 import * as schema from "../db/schema";
 import type { Env } from "@repo/types/index";
@@ -11,9 +11,12 @@ export function dbClient(env: Env) {
     throw new Error("Database connection string not found");
   }
 
-  // Create the pool
-  const pool = new Pool({ connectionString: DATABASE_URL });
+  // Configure neon client
+  neonConfig.fetchConnectionCache = true;
+  
+  // Create the SQL client
+  const sql = neon(DATABASE_URL);
 
   // Return drizzle instance
-  return drizzle(pool, { schema });
+  return drizzle(sql, { schema });
 }
