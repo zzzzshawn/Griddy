@@ -9,6 +9,7 @@
     "@aws-sdk/s3-request-presigner": "^3.750.0",
     "@hono/zod-validator": "^0.4.3",
     "@huggingface/inference": "^3.3.5",
+    "@neondatabase/serverless": "^0.10.4",
     "@repo/types": "workspace:*",
     "@supabase/supabase-js": "^2.48.1",
     "drizzle-kit": "^0.30.4",
