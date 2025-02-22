@@ -5,7 +5,17 @@
     "deploy": "wrangler deploy --minify"
   },
   "dependencies": {
-    "hono": "^4.7.1"
+    "@aws-sdk/client-s3": "^3.750.0",
+    "@aws-sdk/s3-request-presigner": "^3.750.0",
+    "@hono/zod-validator": "^0.4.3",
+    "@huggingface/inference": "^3.3.5",
+    "@repo/types": "workspace:*",
+    "@supabase/supabase-js": "^2.48.1",
+    "drizzle-kit": "^0.30.4",
+    "drizzle-orm": "^0.39.3",
+    "hono": "^4.7.1",
+    "nanoid": "^5.1.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250109.0",
