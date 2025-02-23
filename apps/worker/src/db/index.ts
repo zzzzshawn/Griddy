@@ -1,22 +1,18 @@
-import { drizzle } from 'drizzle-orm/neon-http';
-import { neon, neonConfig } from '@neondatabase/serverless';
-
+import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import postgres from "postgres"; // PostgreSQL client for serverless environments
 import * as schema from "../db/schema";
-import type { Env } from "@repo/types/index";
+import { Env } from "@repo/types/index";
 
-export function dbClient(env: Env) {
+export function dbClient(env: Env): PostgresJsDatabase<typeof schema> {
   const { DATABASE_URL } = env;
 
   if (!DATABASE_URL) {
-    throw new Error("Database connection string not found");
+    throw new Error("Supabase database URL not found in environment variables");
   }
 
-  // Configure neon client
-  neonConfig.fetchConnectionCache = true;
-  
-  // Create the SQL client
-  const sql = neon(DATABASE_URL);
+  // Create a PostgreSQL client using the connection string
+  const client = postgres(DATABASE_URL, { ssl: "require" });
 
-  // Return drizzle instance
-  return drizzle(sql, { schema });
+  // Initialize Drizzle with the PostgreSQL client and schema
+  return drizzle(client, { schema });
 }

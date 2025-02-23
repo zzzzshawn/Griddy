@@ -3,13 +3,13 @@ import { zValidator } from "@hono/zod-validator";
 import { HfInference } from "@huggingface/inference";
 import { Env, generateImageSchema } from "@repo/types/index";
 import { Hono } from "hono";
-import { Bindings } from "hono/types";
 import { customAlphabet } from "nanoid";
 import { createS3Client } from "../lib/r2";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { HTTPException } from "hono/http-exception";
 import { dbClient } from "../db";
+import { getEmbeddings } from "../lib/embedding";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -25,7 +25,11 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
       inputs: body.prompt,
     })) as Blob;
 
-    const imageId = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 10);
+    const generateImageId = customAlphabet(
+      "1234567890abcdefghijklmnopqrstuvwxyz",
+      10
+    ); 
+    const imageId = generateImageId();
 
     const r2 = createS3Client(c.env);
 
@@ -55,6 +59,15 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
 
     const db = dbClient(c.env);
 
+    //? save to db next
+
+    const embedding = await getEmbeddings({
+      env: c.env,
+      text: prompt,
+    });
+
+    const embeddingBuffer = Buffer.from(new Float32Array(embedding).buffer);
+
     const imageArrayBuffer = await blobImage.arrayBuffer();
 
     return c.body(imageArrayBuffer, 200, {
@@ -77,4 +90,4 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
   }
 });
 
-export { app as generate }
+export { app as generate };

@@ -1,13 +1,13 @@
-import { config } from "dotenv";
-import type { Config } from "drizzle-kit";
+import * as dotenv from "dotenv";
 
-config({ path: ".dev.vars" });
+dotenv.config({ path: ".dev.vars" });
+console.log(process.env.DATABASE_URL);
 
 export default {
-  schema: "./src/db/schema.ts",
-  driver: "neon",
-  out: "./drizzle",
+  schema: "./src/db/schema.ts", // Path to your schema file
+  out: "./drizzle/migrations", // Path to store migrations
+  dialect: "postgresql",// PostgreSQL driver
   dbCredentials: {
-    connectionString: process.env.DATABASE_URL || "",
+    url: process.env.DATABASE_URL, // Supabase connection string
   },
-} satisfies Config;
+} 

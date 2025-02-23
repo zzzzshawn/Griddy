@@ -8,7 +8,6 @@ export const images = pgTable(
   {
     id: text("id").primaryKey(),
     prompt: text("prompt").notNull(),
-    // Store embeddings as an array of floating-point numbers
     embedding: real("embedding").array().notNull(),
     createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
   },
