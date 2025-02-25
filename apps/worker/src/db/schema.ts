@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { text, timestamp, uniqueIndex, pgTableCreator, real } from "drizzle-orm/pg-core";
 
-const pgTable = pgTableCreator((name) => `public.${name}`);
+const pgTable = pgTableCreator((name) => `${name}`);
 
 export const images = pgTable(
   "images",

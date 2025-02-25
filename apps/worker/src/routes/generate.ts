@@ -10,6 +10,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { HTTPException } from "hono/http-exception";
 import { dbClient } from "../db";
 import { getEmbeddings } from "../lib/embedding";
+import { images } from "../db/schema";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -22,7 +23,7 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
 
     const blobImage = (await model.request({
       model: "alvdansen/littletinies",
-      inputs: body.prompt,
+      inputs: prompt,
     })) as Blob;
 
     const generateImageId = customAlphabet(
@@ -67,6 +68,12 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
     });
 
     const embeddingBuffer = Buffer.from(new Float32Array(embedding).buffer);
+
+    await db.insert(images).values({
+      id: imageId,
+      prompt,
+      embedding: embeddingBuffer,
+    })
 
     const imageArrayBuffer = await blobImage.arrayBuffer();
 

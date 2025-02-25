@@ -1,11 +1,11 @@
 {
-  "id": "7e92f53b-7e44-4263-8f9b-027f30ceb522",
+  "id": "80f4bd32-de5d-4c6f-a08f-33f6977bd5dc",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.public.images": {
-      "name": "public.images",
+    "public.images": {
+      "name": "images",
       "schema": "",
       "columns": {
         "id": {

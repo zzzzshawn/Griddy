@@ -7,6 +7,8 @@ app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
 
-app.route('/generate', generate)
 
+const routes = app.route('/generate', generate)
+
+export type APIResponses = typeof routes
 export default app
