@@ -10,7 +10,6 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { HTTPException } from "hono/http-exception";
 import { dbClient } from "../db";
 import { getEmbeddings } from "../lib/embedding";
-import { images } from "../db/schema";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -25,6 +24,8 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
       model: "alvdansen/littletinies",
       inputs: prompt,
     })) as Blob;
+
+    console.log("blob created");
 
     const generateImageId = customAlphabet(
       "1234567890abcdefghijklmnopqrstuvwxyz",
@@ -43,9 +44,13 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
       { expiresIn: 60 }
     );
 
+    console.log("signed url created");
+
+    const imageArrayBuffer = await blobImage.arrayBuffer(); 
+
     const uploadResponse = await fetch(signedUrl, {
       method: "PUT",
-      body: blobImage,
+      body: imageArrayBuffer, 
       headers: {
         "Content-Type": blobImage.type,
       },
@@ -58,7 +63,11 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
       });
     }
 
+    console.log("image uploaded");
+
     const db = dbClient(c.env);
+
+    console.log("db client created");
 
     //? save to db next
 
@@ -67,21 +76,29 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
       text: prompt,
     });
 
+    console.log("embeddings generated");
+
     if (!embedding || embedding.length === 0) {
       throw new HTTPException(500, {
         message: "Failed to generate embeddings for the image.",
       });
     }
 
-    await db.insert(images).values({
-      id: imageId,
-      prompt,
-      embedding: embedding,
+    console.log("embeddings checked");
+
+    await db.image.create({
+      data: {
+        id: imageId,
+        prompt,
+        embedding,
+      },
     });
 
-    const imageArrayBuffer = await blobImage.arrayBuffer();
+    console.log("image saved to db");
 
-    return c.body(imageArrayBuffer, 200, {
+    const imageArrayBufferForResponse = await blobImage.arrayBuffer(); 
+
+    return c.body(imageArrayBufferForResponse, 200, {
       "Content-Type": "image/jpeg",
       "Content-Disposition": `inline; filename="${prompt}.jpeg"`,
     });

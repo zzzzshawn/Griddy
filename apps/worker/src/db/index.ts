@@ -1,18 +1,23 @@
-import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import postgres from "postgres"; // PostgreSQL client for serverless environments
-import * as schema from "../db/schema";
 import { Env } from "@repo/types/index";
+import { PrismaClient } from "@prisma/client/edge";
+import { withAccelerate } from "@prisma/extension-accelerate";
 
-export function dbClient(env: Env): PostgresJsDatabase<typeof schema> {
+
+export function dbClient(env: Env) {
   const { DATABASE_URL } = env;
 
   if (!DATABASE_URL) {
-    throw new Error("Supabase database URL not found in environment variables");
+    throw new Error("DataBase credentials not found");
   }
 
-  // Create a PostgreSQL client using the connection string
-  const client = postgres(DATABASE_URL, { ssl: "require" });
+  const prisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: DATABASE_URL,
+      },
+    },
+  }).$extends(withAccelerate());
 
-  // Initialize Drizzle with the PostgreSQL client and schema
-  return drizzle(client, { schema });
+  console.log("dbClient initialized");
+  return prisma;
 }
