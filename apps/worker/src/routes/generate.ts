@@ -29,7 +29,7 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
     const generateImageId = customAlphabet(
       "1234567890abcdefghijklmnopqrstuvwxyz",
       10
-    ); 
+    );
     const imageId = generateImageId();
 
     const r2 = createS3Client(c.env);
@@ -67,13 +67,17 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
       text: prompt,
     });
 
-    const embeddingBuffer = Buffer.from(new Float32Array(embedding).buffer);
+    if (!embedding || embedding.length === 0) {
+      throw new HTTPException(500, {
+        message: "Failed to generate embeddings for the image.",
+      });
+    }
 
     await db.insert(images).values({
       id: imageId,
       prompt,
-      embedding: embeddingBuffer,
-    })
+      embedding: embedding,
+    });
 
     const imageArrayBuffer = await blobImage.arrayBuffer();
 
