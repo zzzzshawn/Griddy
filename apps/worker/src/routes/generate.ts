@@ -29,6 +29,7 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
 
     const generateImageId = customAlphabet(
       "1234567890abcdefghijklmnopqrstuvwxyz",
+      
       10
     );
     const imageId = generateImageId();

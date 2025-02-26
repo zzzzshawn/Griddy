@@ -5,6 +5,11 @@ export const generateImageSchema = z.object({
     prompt: z.string().max(120)
 })
 
+export const queryImageSchema = z.object({
+  query: z.string().optional(),
+  cursor: z.string().optional()
+})
+
 
 export type Env = {
   DATABASE_URL: string
