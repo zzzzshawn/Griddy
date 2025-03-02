@@ -97,9 +97,8 @@ app.post("/", zValidator("json", generateImageSchema), async (c: any) => {
 
     console.log("image saved to db");
 
-    const imageArrayBufferForResponse = await blobImage.arrayBuffer(); 
 
-    return c.body(imageArrayBufferForResponse, 200, {
+    return c.body(imageArrayBuffer, 200, {
       "Content-Type": "image/jpeg",
       "Content-Disposition": `inline; filename="${prompt}.jpeg"`,
     });
