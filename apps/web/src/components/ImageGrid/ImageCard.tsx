@@ -70,10 +70,6 @@ export function ImageCard({
       })
     } catch (error) {
       console.error("Error sharing:", error)
-      toast({
-        title: "Lol try again",
-        description: "Skill issue frfr"
-      });
     } finally {
       isSharing = false
     }
