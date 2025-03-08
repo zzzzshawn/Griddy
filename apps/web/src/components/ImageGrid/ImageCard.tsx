@@ -91,25 +91,23 @@ export function ImageCard({
     if (!imgUrl) return;
 
     try {
-      const response = await fetch(imgUrl);
-
-      if (!response.ok) throw new Error('Failed to fetch image');
-
-      const blobData = await response.blob();
-      const url = window.URL.createObjectURL(blobData);
       const link = document.createElement("a");
-      link.href = url;
-      link.download = "griddy.jpg";
+      link.href = imgUrl;
+
+      const filename = "griddy.jpg";
+      link.setAttribute('download', filename);
+      link.setAttribute('target', '_blank');
+      link.style.display = 'none';
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading:", error);
       toast({
         title: "Lol try again",
         description: "Skill issue",
-      })
+      });
     }
   }
 
