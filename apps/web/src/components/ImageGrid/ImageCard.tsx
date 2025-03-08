@@ -8,6 +8,7 @@ import { CheckIcon, Copy, Download, Share2 } from "lucide-react"
 import { cn, getIdFromUrl } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useImageStore } from "@/store/use-image"
+import { useToast } from "@/hooks/use-toast"
 
 interface ImageCardProps {
   imgUrl: string | null
@@ -27,6 +28,7 @@ export function ImageCard({
   const { setData } = useImageStore()
   const [hasCheckIcon, setHasCheckIcon] = React.useState(false)
   const [isImageLoading, setIsImageLoading] = React.useState(true)
+  const { toast } = useToast()
 
   function onCopy() {
     void navigator.clipboard.writeText(prompt ?? "")
@@ -40,75 +42,67 @@ export function ImageCard({
   let isSharing = false
 
   async function onShare() {
-    if (isSharing) return
-
-    if (!imgUrl) return alert("No image url found!")
-
-    isSharing = true
+    if (isSharing || !imgUrl) return;
+    isSharing = true;
 
     try {
-      let blobData: Blob
+      const response = await fetch(imgUrl);
+      if (!response.ok) throw new Error('Failed to fetch image');
 
-      if (blob) {
-        const response = await fetch(imgUrl)
-        blobData = await response.blob()
-      } else {
-        const response = await fetch(`/download/${getIdFromUrl(imgUrl)}`)
-        blobData = await response.blob()
-      }
-
+      const blobData = await response.blob();
       const filesArray = [
-        new File([blobData], "artoons.jpg", {
+        new File([blobData], "griddy.jpg", {
           type: "image/jpeg",
           lastModified: new Date().getTime(),
         }),
-      ]
+      ];
 
-      const shareData = {
-        files: filesArray,
+      if (!navigator.canShare || !navigator.canShare({ files: filesArray })) {
+        throw new Error('Sharing not supported on this device');
       }
 
-      await navigator.share(shareData)
+      await navigator.share({ files: filesArray });
     } catch (error) {
-      console.error("Error sharing:", error)
-      alert("Failed to share the image.")
+      console.error("Error sharing:", error);
+      if (error instanceof Error) {
+        toast({
+          title: "Lol try again",
+          description: error.message,
+        })
+      } else {
+        toast({
+          title: "Lol try again",
+          description: "Skill issue",
+        })
+      }
     } finally {
-      isSharing = false
+      isSharing = false;
     }
   }
 
   async function onDownload() {
-    if (!imgUrl) return alert("No image url found!")
+    if (!imgUrl) return;
 
     try {
-      let blobData: Blob;
+      // Fetch directly from R2
+      const response = await fetch(imgUrl);
+      if (!response.ok) throw new Error('Failed to fetch image');
 
-      if (blob) {
-        const response = await fetch(imgUrl);
-        blobData = await response.blob();
-      } else {
-        const response = await fetch(imgUrl, {
-          headers: {
-            'Accept': 'image/jpeg,image/png,image/*'
-          }
-        });
-        if (!response.ok) throw new Error('Failed to fetch image');
-        blobData = await response.blob();
-      }
-
-      const fileName = 'griddy.jpg';
-
+      const blobData = await response.blob();
       const url = window.URL.createObjectURL(blobData);
       const link = document.createElement("a");
       link.href = url;
-      link.download = fileName;
+      link.download = "griddy.jpg";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading:", error);
-      alert("Failed to download the image.");
+      toast({
+        title: "Lol try again",
+        description: "Skill issue",
+      })
     }
   }
 
