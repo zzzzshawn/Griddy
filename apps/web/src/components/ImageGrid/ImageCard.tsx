@@ -46,7 +46,14 @@ export function ImageCard({
     isSharing = true;
 
     try {
-      const response = await fetch(imgUrl);
+      const response = await fetch(imgUrl, {
+        headers: {
+          'Accept': 'image/jpeg,image/png,image/*',
+          'Origin': window.location.origin
+        },
+        mode: 'cors'
+      });
+
       if (!response.ok) throw new Error('Failed to fetch image');
 
       const blobData = await response.blob();
@@ -84,8 +91,14 @@ export function ImageCard({
     if (!imgUrl) return;
 
     try {
-      // Fetch directly from R2
-      const response = await fetch(imgUrl);
+      const response = await fetch(imgUrl, {
+        headers: {
+          'Accept': 'image/jpeg,image/png,image/*',
+          'Origin': window.location.origin
+        },
+        mode: 'cors'
+      });
+
       if (!response.ok) throw new Error('Failed to fetch image');
 
       const blobData = await response.blob();
