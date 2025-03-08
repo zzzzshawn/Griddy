@@ -91,13 +91,7 @@ export function ImageCard({
     if (!imgUrl) return;
 
     try {
-      const response = await fetch(imgUrl, {
-        headers: {
-          'Accept': 'image/jpeg,image/png,image/*',
-          'Origin': window.location.origin
-        },
-        mode: 'cors'
-      });
+      const response = await fetch(imgUrl);
 
       if (!response.ok) throw new Error('Failed to fetch image');
 
