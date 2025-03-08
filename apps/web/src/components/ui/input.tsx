@@ -1,7 +1,5 @@
 import * as React from "react"
 
-import { Search } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 
 export interface InputProps

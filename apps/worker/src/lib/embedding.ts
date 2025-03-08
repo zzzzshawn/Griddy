@@ -1,7 +1,5 @@
 import { Env } from "@repo/types/index";
-import { config } from "dotenv";
 
-config({ path: ".dev.vars" });
 
 interface EmbeddingResponse {
   result: {
