@@ -42,71 +42,70 @@ export function ImageCard({
   let isSharing = false
 
   async function onShare() {
-    if (isSharing || !imgUrl) return;
-    isSharing = true;
+    if (isSharing) return
+    if (!imgUrl) return alert("No image url found!")
+
+    isSharing = true
 
     try {
-      const response = await fetch(imgUrl, {
-        headers: {
-          'Accept': 'image/jpeg,image/png,image/*',
-          'Origin': window.location.origin
-        },
-        mode: 'cors'
-      });
+      let blobData: Blob
 
-      if (!response.ok) throw new Error('Failed to fetch image');
+      if (blob) {
+        const response = await fetch(imgUrl)
+        blobData = await response.blob()
+      } else {
+        const response = await fetch(`/download/${getIdFromUrl(imgUrl)}`)
+        blobData = await response.blob()
+      }
 
-      const blobData = await response.blob();
       const filesArray = [
         new File([blobData], "griddy.jpg", {
           type: "image/jpeg",
           lastModified: new Date().getTime(),
         }),
-      ];
+      ]
 
-      if (!navigator.canShare || !navigator.canShare({ files: filesArray })) {
-        throw new Error('Sharing not supported on this device');
-      }
-
-      await navigator.share({ files: filesArray });
+      await navigator.share({
+        files: filesArray,
+      })
     } catch (error) {
-      console.error("Error sharing:", error);
-      if (error instanceof Error) {
-        toast({
-          title: "Lol try again",
-          description: error.message,
-        })
-      } else {
-        toast({
-          title: "Lol try again",
-          description: "Skill issue",
-        })
-      }
+      console.error("Error sharing:", error)
+      toast({
+        title: "Lol try again",
+        description: "Skill issue frfr"
+      });
     } finally {
-      isSharing = false;
+      isSharing = false
     }
   }
 
   async function onDownload() {
-    if (!imgUrl) return;
+    if (!imgUrl) return alert("No image url found!");
 
     try {
+      let blobData: Blob;
+
+      if (blob) {
+        const response = await fetch(imgUrl);
+        blobData = await response.blob();
+      } else {
+        const response = await fetch(`/download/${getIdFromUrl(imgUrl)}`);
+        blobData = await response.blob();
+      }
+
+      const url = window.URL.createObjectURL(blobData);
       const link = document.createElement("a");
-      link.href = imgUrl;
-
-      const filename = "griddy.jpg";
-      link.setAttribute('download', filename);
-      link.setAttribute('target', '_blank');
-      link.style.display = 'none';
-
+      link.href = url;
+      link.download = "griddy.jpg";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading:", error);
       toast({
         title: "Lol try again",
-        description: "Skill issue",
+        description: "Skill issue frfr"
       });
     }
   }
