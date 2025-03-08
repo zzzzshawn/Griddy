@@ -4,35 +4,17 @@ import Hero from '@/components/Hero/Hero';
 import ImageGrid from '@/components/ImageGrid/ImageGrid';
 import { api } from '@/lib/utils';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { useInView } from "react-intersection-observer"
 import { LayoutGroup, motion } from 'framer-motion'
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDebounce } from '@/hooks/use-debounce';
-import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
-
+import { SearchBar } from '@/components/SearchBar';
 
 const Home = () => {
   const { ref, inView } = useInView();
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined)
-  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false)
-  const debounceQuery = useDebounce(searchQuery, 300)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.innerWidth <= 640) {
-        setIsSearchVisible(window.scrollY > 100);
-      } else {
-        setIsSearchVisible(true);
-      }
-    };
-
-    handleScroll();
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const [searchQuery, setSearchQuery] = React.useState<string | undefined>(undefined);
+  const debounceQuery = useDebounce(searchQuery, 300);
 
   const fetchImages = useCallback(
     async ({ pageParams }: { pageParams?: number }) => {
@@ -80,49 +62,12 @@ const Home = () => {
     )
   }, [data])
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent | KeyboardEvent) => {
-      const target = e.target as HTMLElement;
-      const searchInput = document.getElementById('search-input');
-
-      if (e instanceof KeyboardEvent && e.key === 'k' && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault(); 
-        setIsSearchOpen(true);
-        return;
-      }
-
-      if (e instanceof KeyboardEvent && e.key === 'Escape') {
-        setIsSearchOpen(false);
-        setSearchQuery(undefined)
-        return;
-      }
-
-      if (searchInput && !searchInput.contains(target)) {
-        setIsSearchOpen(false);
-        setSearchQuery(undefined)
-      } else if (searchInput && searchInput.contains(target)) {
-        setIsSearchOpen(true);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleClickOutside);
-    };
-  }, []);
-
-
   return (
     <main className='flex flex-col items-center gap-10 min-h-screen w-full border mx-auto bg-dark-2 relative font-grandstander p-5'>
       <LayoutGroup>
-
         <motion.div
           layout
           layoutId="container"
-
           className="z-30 mx-auto w-full max-w-6xl flex flex-col gap-10 items-center justify-center bg-zinc-800/20 backdrop-blur-2xl rounded-3xl backdrop-saturate-150 sm:p-20 max-sm:p-10 overflow-hidden max-sm:h-[95dvh]"
         >
           <motion.div layoutId="hero">
@@ -137,7 +82,6 @@ const Home = () => {
           </span>
         </motion.div>
 
-
         <motion.div layout className='w-full'>
           <ImageGrid
             ref={ref}
@@ -145,7 +89,6 @@ const Home = () => {
             hasNextPage={hasNextPage}
           />
         </motion.div>
-
 
         {isLoading && (
           <section className="grid w-full grid-cols-2 gap-2 pt-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
@@ -158,43 +101,7 @@ const Home = () => {
           </section>
         )}
 
-
-        <motion.div
-          layout
-          initial={{
-            opacity: window?.innerWidth > 640 ? 1 : 0,
-            y: window?.innerWidth > 640 ? 0 : 20
-          }}
-          animate={{
-            opacity: isSearchVisible ? 1 : 0,
-            y: isSearchVisible ? 0 : 20
-          }}
-          className={`fixed z-30 bottom-7 rounded-2xl backdrop-blur-md backdrop-saturate-100 bg-zinc-800/20 border border-white/20 ${isSearchOpen ? "p-0.5" : "p-3"}`}
-        >
-          {
-            !isSearchOpen && (
-              <Search
-                className="size-6 text-white cursor-pointer"
-                onClick={() => setIsSearchOpen(true)}
-              />
-            )
-          }
-          {
-            isSearchOpen && (
-              <Input
-                autoFocus
-                autoComplete="off"
-                placeholder="Search for anything"
-                id="search-input"
-                spellCheck={false}
-                className="h-12 w-[350px] rounded-xl backdrop-blur-xl backdrop-saturate-100 bg-zinc-800/10 text-sm border border-white/10"
-                value={searchQuery || ""}
-                onChange={(e) => setSearchQuery(e.target.value || undefined)}
-              />
-            )
-          }
-        </motion.div>
-
+        <SearchBar onSearch={setSearchQuery} />
       </LayoutGroup>
     </main>
   )
