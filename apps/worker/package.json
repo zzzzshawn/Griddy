@@ -2,7 +2,7 @@
   "name": "@repo/worker",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy --minify"
+    "deploy": "wrangler deploy --minify src/index.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.750.0",
