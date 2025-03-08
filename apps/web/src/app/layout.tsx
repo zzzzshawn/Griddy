@@ -5,6 +5,8 @@ import Providers from "@/components/providers/Providers";
 import { Space_Grotesk } from "next/font/google";
 import { Grandstander } from "next/font/google";
 import { ImageView } from "@/components/ImageGrid/imageView";
+import { Toaster } from "@/components/ui/toaster";
+
 
 const urbanStarblues = localFont({
   src: "./fonts/urban.woff2",
@@ -42,6 +44,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <ImageView />
+          <Toaster/>
         </Providers>
       </body>
     </html>

@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query'
 import { ImageCard } from '../ImageGrid/ImageCard'
 import { Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useToast } from '@/hooks/use-toast'
 
 interface GenerateProps {
     onSuccess: () => void;
@@ -14,10 +15,10 @@ interface GenerateProps {
 const Generate = ({ onSuccess }: GenerateProps) => {
     const [prompt, setPrompt] = useState('')
     const [imgPrompt, setImgPrompt] = useState('')
-
     const [imageSrc, setImageSrc] = useState<string | null>('')
     const [isGenerating, setIsGenerating] = useState(false)
     const [isButtonOpen, setIsButtonOpen] = useState(false)
+    const { toast } = useToast()
 
 
     const generateImage = async (prompt: string) => {
@@ -28,6 +29,10 @@ const Generate = ({ onSuccess }: GenerateProps) => {
         })
         if (!response.ok) {
             const errorMessage = await response.text()
+            toast({
+                title: 'Thats enough for today mate',
+                description: errorMessage,
+            })
             console.error('Error generating image:', errorMessage)
             throw new Error(errorMessage)
         }

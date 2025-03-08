@@ -18,7 +18,7 @@ app.post(
   rateLimitMiddleware({
     identifier: "GENERATE_RATE_LIMITER",
     duration: 86400,
-    limit: 6,
+    limit: 5,
   }),
   async (c: any) => {
     try {

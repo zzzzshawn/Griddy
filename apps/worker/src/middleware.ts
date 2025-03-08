@@ -25,7 +25,7 @@ export function rateLimitMiddleware({
     if (!data || now - data.lastRequestTime > duration * 1000) {
       data = { count: 1, lastRequestTime: now }
     } else if (data.count >= limit) {
-      return c.text("Too many requests. Please try again later.", 429)
+      return c.text("You get only 5 images/day lil bro 🤣🤣", 429)
     } else {
       data.count++
     }
