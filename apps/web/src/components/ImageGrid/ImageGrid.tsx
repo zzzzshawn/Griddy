@@ -1,5 +1,6 @@
-import Image from 'next/image'
-import React from 'react'
+import React, { forwardRef } from 'react'
+import { ImageCard } from './ImageCard'
+import { Skeleton } from '../ui/skeleton'
 
 interface ImagesSectionProps {
     images: {
@@ -9,31 +10,35 @@ interface ImagesSectionProps {
     hasNextPage: boolean
 }
 
-const ImageGrid = React.forwardRef<HTMLDivElement, ImagesSectionProps>(({ images, hasNextPage }, ref) => {
+const ImageGrid = forwardRef<HTMLDivElement, ImagesSectionProps>(({ images, hasNextPage }, ref) => {
 
     return (
-        <section className=''>
-            {
-                images.map((image, idx)=> (
-                    <Image
-                        key={idx}
-                        src={image.url}
-                        alt={image.prompt}
-                        width={500}
-                        height={500}
+        <section className="grid w-full grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {images.map((data, idx) => (
+                <ImageCard key={idx} imgUrl={data.url} prompt={data.prompt} />
+            ))}
+            {hasNextPage && (
+                <>
+                    <div
+                        className="aspect-[0.9] size-full animate-pulse rounded-xl bg-muted"
                     />
-                ))
-            }
-            {
-                hasNextPage && (
-                    <div ref={ref} className='w-full h-10 bg-slate-500'>
-                        Loading...
-                    </div>
-                )
-            }
+                    {Array.from({ length: 5 }).map((_, idx) => (
+                        <div ref={ref}
+                            key={idx}
+                            className="">
+
+                            <Skeleton
+                                className="aspect-[0.9] size-full rounded-xl"
+                            />
+                        </div>
+                    ))}
+                </>
+            )}
         </section>
     )
 }
 )
+
+ImageGrid.displayName = "ImageGrid"
 
 export default ImageGrid

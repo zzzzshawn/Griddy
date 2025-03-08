@@ -2,16 +2,26 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "@/components/providers/Providers";
+import { Space_Grotesk } from "next/font/google";
+import { Grandstander } from "next/font/google";
+import { ImageView } from "@/components/ImageGrid/imageView";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
+const urbanStarblues = localFont({
+  src: "./fonts/urban.woff2",
+  variable: "--font-urban",
   weight: "100 900",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const grandstander = Grandstander({
+  subsets: ["latin"],
+  variable: "--font-grandstander",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -27,10 +37,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
+        className={`${urbanStarblues.variable} ${spaceGrotesk.variable} ${grandstander.variable}  antialiased `}
       >
         <Providers>
           {children}
+          <ImageView />
         </Providers>
       </body>
     </html>

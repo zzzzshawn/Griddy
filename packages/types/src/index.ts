@@ -1,32 +1,22 @@
 import { z } from "zod";
-import type { KVNamespace } from "@cloudflare/workers-types"
+import type { KVNamespace } from "@cloudflare/workers-types";
+
+export interface Env {
+  DATABASE_URL: string;
+  HUGGINGFACE_KEY: string;
+  CLOUDFLARE_API_TOKEN: string;
+  R2_ACCESS_KEY_ID: string;
+  R2_SECRET_ACCESS_KEY: string;
+  R2_BUCKET_NAME: string;
+  R2_ACCOUNT_ID: string;
+  RATE_LIMITER: KVNamespace;
+}
 
 export const generateImageSchema = z.object({
-    prompt: z.string().max(120)
-})
+  prompt: z.string(),
+});
 
 export const queryImageSchema = z.object({
   query: z.string().optional(),
-  cursor: z.string().optional()
-})
-
-
-export type Env = {
-  DATABASE_URL: string
-  DATABASE_AUTH_TOKEN: string
-
-  HUGGINGFACE_KEY: string
-
-  R2_ACCOUNT_ID: string
-  R2_ACCESS_KEY_ID: string
-  R2_SECRET_ACCESS_KEY: string
-  R2_BUCKET_NAME: string
-
-  SUPABASE_URL: string
-  SUPABASE_ANON_KEY: string
-
-  NEXT_APP_URL: string
-  GROQ_API_KEY: string
-
-  RATE_LIMITER: KVNamespace
-}
+  cursor: z.string().optional(),
+});

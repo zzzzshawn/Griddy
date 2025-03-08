@@ -3,18 +3,17 @@
   "name": "worker",
   "main": "src/index.ts",
   "compatibility_date": "2025-02-17",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ]
+  "compatibility_flags": ["nodejs_compat"],
   // "vars": {
   //   "MY_VAR": "my-variable"
   // },
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
+
+  "kv_namespaces": [
+    {
+      "binding": "RATE_LIMITER",
+      "id": "a732170393bd42d6a3c0262187ed84b8"
+    }
+  ]
   // "r2_buckets": [
   //   {
   //     "binding": "MY_BUCKET",

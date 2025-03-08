@@ -1,34 +1,48 @@
-import { HfInference } from "@huggingface/inference"
-import { Env } from "@repo/types/index"
-import { config } from "dotenv"
+import { Env } from "@repo/types/index";
+import { config } from "dotenv";
 
+config({ path: ".dev.vars" });
 
-config({ path: ".dev.vars" })
+interface EmbeddingResponse {
+  result: {
+    data: number[][];
+  };
+}
 
 interface GetEmbeddingsProps {
-  env?: Env
-  text: string
+  env: Env;
+  text: string;
 }
 
 export async function getEmbeddings({
   env,
   text,
 }: GetEmbeddingsProps): Promise<number[]> {
-  const inference = new HfInference(
-    env ? env.HUGGINGFACE_KEY : process.env.HUGGINGFACE_KEY,
-  )
-
   try {
-    const model = "thenlper/gte-small"
+    const response = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${env.R2_ACCOUNT_ID}/ai/run/@cf/baai/bge-base-en-v1.5`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${env.CLOUDFLARE_API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: [text],
+        }),
+      }
+    );
 
-    const embeddings = (await inference.featureExtraction({
-      model,
-      inputs: text,
-    })) as number[]
+    if (!response.ok) {
+      throw new Error(
+        `Failed to generate embeddings: ${await response.text()}`
+      );
+    }
 
-    return embeddings
+    const result = (await response.json()) as EmbeddingResponse;
+    return result.result.data[0] || [];
   } catch (error) {
-    console.error("Error:", error)
-    return []
+    console.error("Error generating embeddings:", error);
+    return [];
   }
 }

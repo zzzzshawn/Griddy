@@ -13,6 +13,7 @@
     "@prisma/extension-accelerate": "^1.2.2",
     "@repo/types": "workspace:*",
     "@supabase/supabase-js": "^2.48.1",
+    "axios": "^1.8.1",
     "dotenv": "^16.4.7",
     "hono": "^4.7.1",
     "nanoid": "^5.1.0",
@@ -26,6 +27,7 @@
     "wrangler": "^3.101.0"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./middleware": "./src/middleware.ts"
   }
 }
