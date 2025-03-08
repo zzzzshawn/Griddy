@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "apollo",
+      "name": "griddy",
       "devDependencies": {
         "prettier": "^3.5.0",
         "turbo": "^2.4.2",
