@@ -55,7 +55,6 @@ const Generate = ({ onSuccess }: GenerateProps) => {
         onError: (error) => {
             console.error('Error generating image:', error)
             setIsGenerating(false)
-            toast({ title: 'Try again lil bro.' })
         }
     })
 
