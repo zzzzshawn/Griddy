@@ -8,7 +8,7 @@ const app = new Hono();
 app.use(
   "/*",
   cors({
-    origin: ["http://localhost:3000", "https://griddy-v1.vercel.app"], 
+    origin: ["http://localhost:3001", "https://griddy-v1.vercel.app"], 
     credentials: true,
   })
 );

@@ -9,6 +9,7 @@ import { HTTPException } from "hono/http-exception";
 import { dbClient } from "../db";
 import { getEmbeddings } from "../lib/embedding";
 import { rateLimitMiddleware } from "../middleware";
+import { isNSFW } from "../lib/nsfw";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -24,6 +25,8 @@ app.post(
     try {
       const body = c.req.valid("json");
       const prompt = `${body.prompt} in a graffiti art style`;
+
+      await isNSFW({ c: c, text: prompt, });
 
       const response = await fetch(
         `https://api.cloudflare.com/client/v4/accounts/${c.env.R2_ACCOUNT_ID}/ai/run/@cf/bytedance/stable-diffusion-xl-lightning`,
