@@ -47,7 +47,7 @@ export default function RootLayout({
           <Toaster />
           <Script
             defer
-            data-domain="https://griddy-v1.vercel.app" 
+            data-domain="griddy-v1.vercel.app"
             src="https://analytics-code.vercel.app/tracking-script.js"
           />
         </Providers>
