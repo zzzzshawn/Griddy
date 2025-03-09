@@ -6,6 +6,7 @@ import { Space_Grotesk } from "next/font/google";
 import { Grandstander } from "next/font/google";
 import { ImageView } from "@/components/ImageGrid/imageView";
 import { Toaster } from "@/components/ui/toaster";
+import Script from "next/script";
 
 
 const urbanStarblues = localFont({
@@ -43,7 +44,12 @@ export default function RootLayout({
         <Providers>
           {children}
           <ImageView />
-          <Toaster/>
+          <Toaster />
+          <Script
+            defer
+            data-domain="https://griddy-v1.vercel.app" 
+            src="https://analytics-code.vercel.app/tracking-script.js"
+          />
         </Providers>
       </body>
     </html>
