@@ -17,7 +17,7 @@ export async function isNSFW({ c, text }: CheckTextProps) {
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
 
   try {
     const prompt = `You are an AI system responsible for detecting inappropriate or unsafe-for-work (NSFW) language in text. When provided with a sentence or passage, your task is to analyze the text and determine if it contains any words or phrases that are considered sexually inappropriate or explicit.
