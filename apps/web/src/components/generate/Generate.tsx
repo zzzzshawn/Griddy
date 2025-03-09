@@ -45,6 +45,7 @@ const Generate = ({ onSuccess }: GenerateProps) => {
         mutationFn: generateImage,
         onMutate: () => {
             setIsGenerating(true)
+            toast({ title: 'Might take around 30 - 40 secs...' })
         },
         onSuccess: (imageUrl) => {
             setImageSrc(imageUrl);
@@ -54,6 +55,7 @@ const Generate = ({ onSuccess }: GenerateProps) => {
         onError: (error) => {
             console.error('Error generating image:', error)
             setIsGenerating(false)
+            toast({ title: 'Try again lil bro.' })
         }
     })
 
