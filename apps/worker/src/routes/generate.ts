@@ -19,12 +19,12 @@ app.post(
   rateLimitMiddleware({
     identifier: "GENERATE_RATE_LIMITER",
     duration: 86400,
-    limit: 5,
+    limit: 7, 
   }),
   async (c: any) => {
     try {
       const body = c.req.valid("json");
-      const prompt = `${body.prompt} in a graffiti art style`;
+      const prompt = `${body.prompt} in a Graffiti art style with bright colors`;
 
       await isNSFW({ c: c, text: body.prompt, });
 
@@ -41,6 +41,7 @@ app.post(
             num_steps: 20,
             width: 1024,
             height: 1024,
+            guidance_scale: 6.9,
           }),
         }
       );
