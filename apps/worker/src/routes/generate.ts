@@ -26,10 +26,10 @@ app.post(
       const body = c.req.valid("json");
       const prompt = `${body.prompt} in a graffiti art style`;
 
-      await isNSFW({ c: c, text: prompt, });
+      await isNSFW({ c: c, text: body.prompt, });
 
       const response = await fetch(
-        `https://api.cloudflare.com/client/v4/accounts/${c.env.R2_ACCOUNT_ID}/ai/run/@cf/bytedance/stable-diffusion-xl-lightning`,
+        `https://api.cloudflare.com/client/v4/accounts/${c.env.R2_ACCOUNT_ID}/ai/run/@cf/stabilityai/stable-diffusion-xl-base-1.0`,
         {
           method: "POST",
           headers: {
@@ -129,7 +129,7 @@ app.post(
 
       return c.body(imageArrayBuffer, 200, {
         "Content-Type": "image/jpeg",
-        "Content-Disposition": `inline; filename="${prompt}.jpeg"`,
+        "Content-Disposition": `inline; filename="${body.prompt}.jpeg"`,
       });
     } catch (error) {
       console.error(error);
