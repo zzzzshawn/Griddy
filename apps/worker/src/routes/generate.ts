@@ -24,7 +24,7 @@ app.post(
   async (c: any) => {
     try {
       const body = c.req.valid("json");
-      const prompt = `${body.prompt} in a Graffiti art style with bright colors`;
+      const prompt = `${body.prompt} in a dark Graffiti art style!`;
 
       await isNSFW({ c: c, text: body.prompt, });
 
